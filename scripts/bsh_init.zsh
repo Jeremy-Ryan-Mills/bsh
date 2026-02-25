@@ -1,15 +1,18 @@
 if command -v bsh-daemon >/dev/null 2>&1; then
     export BSH_DAEMON_BIN="$(command -v bsh-daemon)"
 else
+    local LOCAL_BIN="$HOME/.local/bin/bsh-daemon"    
     local BSH_INIT_SCRIPT_PATH="${(%):-%N}"
     local BSH_REPO_ROOT="$(dirname $(dirname $BSH_INIT_SCRIPT_PATH))"
 
-    if [[ -x "$BSH_REPO_ROOT/bin/bsh-daemon" ]]; then
+    if [[ -x "$LOCAL_BIN" ]]; then
+        export BSH_DAEMON_BIN="$LOCAL_BIN"
+    elif [[ -x "$BSH_REPO_ROOT/bin/bsh-daemon" ]]; then
         export BSH_DAEMON_BIN="$BSH_REPO_ROOT/bin/bsh-daemon"
     elif [[ -x "$BSH_REPO_ROOT/build/bsh-daemon" ]]; then
         export BSH_DAEMON_BIN="$BSH_REPO_ROOT/build/bsh-daemon"
     else
-        echo "BSH Error: bsh-daemon not found in PATH or local build directories."
+        echo "BSH Error: bsh-daemon not found in PATH, ~/.local/bin, or local build directories."
         return 1
     fi
 fi
@@ -19,7 +22,7 @@ typeset -gA _bsh_suggestions
 typeset -g _bsh_start_time
 typeset -g _bsh_current_cmd
 typeset -g _bsh_mode=0 # 0=Global, 1=Directory, 2=Branch
-typeset -g _bsh_cycle_direction=1 # 1=Forward, -1=Backward (Fixes the skip bug)
+typeset -g _bsh_cycle_direction=1 # 1=Forward, -1=Backward 
 typeset -g _bsh_selection_idx=-1
 typeset -g _bsh_original_query=""
 _bsh_filter_success=0
@@ -257,6 +260,7 @@ bindkey '‹' _bsh_insert_3
 bindkey '›' _bsh_insert_4
 bindkey 'ﬁ' _bsh_insert_5
 
-# Paste the following into your .zshrc if you want to use the up/down arrow keys for cycling through suggestions instead of history:
+# Paste the following into your .zshrc if you want to use the up/down arrow keys
+# for cycling through suggestions instead of history:
 # bindkey '^[[A' _bsh_cycle_up
 # bindkey '^[[B' _bsh_cycle_down

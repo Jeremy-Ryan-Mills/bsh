@@ -5,8 +5,14 @@ import time
 
 # Paths
 HOME = os.path.expanduser("~")
-ZSH_HISTORY = os.path.join(HOME, ".zsh_history")
-BSH_DIR = os.path.join(HOME, ".local/share/bsh")
+ZSH_HISTORY = os.environ.get("HISTFILE", os.path.join(HOME, ".zsh_history"))
+
+XDG_DATA_HOME = os.environ.get("XDG_DATA_HOME")
+if XDG_DATA_HOME:
+    BSH_DIR = os.path.join(XDG_DATA_HOME, "bsh")
+else:
+    BSH_DIR = os.path.join(HOME, ".local", "share", "bsh")
+
 BSH_DB = os.path.join(BSH_DIR, "history.db")
 
 def parse_zsh_history(file_path):

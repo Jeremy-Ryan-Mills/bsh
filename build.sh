@@ -1,8 +1,9 @@
 DAEMON_NAME="bsh-daemon"
-INSTALL_DIR="$HOME/.bsh"
-BIN_PATH="$INSTALL_DIR/bin"
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+INSTALL_DIR="$XDG_DATA_HOME/bsh"
+BIN_PATH="$HOME/.local/bin"
+ZSHRC_PATH="${ZDOTDIR:-$HOME}/.zshrc"
 ZSH_INIT_FILE="scripts/bsh_init.zsh"
-ZSHRC_PATH="$HOME/.zshrc"
 
 echo "Preparing BSH installation..."
 mkdir -p "$BIN_PATH"
@@ -24,9 +25,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 echo "Installing binaries and scripts..."
-
 cp "build/$DAEMON_NAME" "$BIN_PATH/$DAEMON_NAME"
-
 cp "$ZSH_INIT_FILE" "$INSTALL_DIR/scripts/"
 
 echo "Updating $ZSHRC_PATH..."

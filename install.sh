@@ -1,8 +1,10 @@
 set -e
 
 REPO="karthikeyjoshi/bsh"
-INSTALL_DIR="$HOME/.bsh"
-ZSHRC_PATH="$HOME/.zshrc"
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+INSTALL_DIR="$XDG_DATA_HOME/bsh"
+BIN_DIR="$HOME/.local/bin"
+ZSHRC_PATH="${ZDOTDIR:-$HOME}/.zshrc"
 
 VERSION="${BSH_VERSION:-latest}"
 
@@ -39,6 +41,7 @@ else
 fi
 
 mkdir -p "$INSTALL_DIR"
+mkdir -p "$BIN_DIR"
 
 if ! curl -sSL "$DOWNLOAD_URL" | tar -xz -C "$INSTALL_DIR"; then
     echo -e "${RED}Error: Failed to download or extract the release.${NC}"
@@ -47,7 +50,9 @@ if ! curl -sSL "$DOWNLOAD_URL" | tar -xz -C "$INSTALL_DIR"; then
     exit 1
 fi
 
-chmod +x "$INSTALL_DIR/bin/bsh-daemon"
+mv "$INSTALL_DIR/bin/bsh-daemon" "$BIN_DIR/bsh-daemon"
+chmod +x "$BIN_DIR/bsh-daemon"
+rm -rf "$INSTALL_DIR/bin"
 
 pkill bsh-daemon || true
 

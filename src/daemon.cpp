@@ -86,8 +86,16 @@ void daemonize() {
 }
 
 std::string get_db_path() {
-    const char* home = std::getenv("HOME");
-    fs::path dir = fs::path(home) / ".local" / "share" / "bsh";
+    const char* xdg_data_home = std::getenv("XDG_DATA_HOME");
+    fs::path dir;
+
+    if (xdg_data_home && *xdg_data_home != '\0') {
+        dir = fs::path(xdg_data_home) / "bsh";
+    } else {
+        const char* home = std::getenv("HOME");
+        dir = fs::path(home) / ".local" / "share" / "bsh";
+    }
+
     if (!fs::exists(dir)) fs::create_directories(dir);
     return (dir / "history.db").string();
 }
